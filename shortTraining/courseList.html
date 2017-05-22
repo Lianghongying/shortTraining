@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.course-name {
+				color: #6179BF;
+				padding: 0;
+				margin: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="mui-content">
+			<!--下拉刷新容器-->
+			<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<!--数据列表-->
+					<ul class="mui-table-view mui-table-view-chevron">
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					var t = '';
+					var webView = plus.webview.currentWebview();
+					if (webView.id == 'ingCourseList') {
+						t = 'ing';
+					} else {
+						t = 'end';
+					}
+					var table = document.body.querySelector('.mui-table-view');
+					ajax({
+						
+						url: '/training/course/list/' + localStorage.getItem('userId') + '?t=' + t,
+						type: 'GET',
+						success: function(json) {
+							if (ajaxSuccess(json)) {
+								var html = '';
+								if (json.data && json.data.length > 0) {
+									for (var i = 0; i < json.data.length; i++) {
+										html += '<li courseId="' + json.data[i].id + '" class="mui-table-view-cell mui-media">';
+										html += '<a class="mui-navigate-right">';
+										html += '<div class="mui-media-body">';
+										html += '<span class="course-name">' + json.data[i].name + '</span>';
+										console.log("描述 = " + json.data[i].description);
+										console.log("时间 = " + json.data[i].organizer);
+										console.log("地点 = " + json.data[i].addr);
+										if (json.data[i].description) {
+											html += '<p class="course-organizer">' + "主办单位："+ json.data[i].organizer + '</p>';
+											html += '<p class="course-addr">' + "培训地点："+  json.data[i].addr + '</p>';
+										}
+										html += '</div>';
+										html += '</a>';
+										html += '</li>';
+									}
+								} else {
+									html += '<li style="background: transparent; line-height: 43px;"><p style="text-align: center;">暂无数据</p></li>';
+								}
+								table.innerHTML = html;
+								mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							} else {
+								plus.nativeUI.toast('获取课程信息失败，请稍后再试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.ui.toast('获取课程信息失败，请稍后再试');
+						}
+					});
+				}, 1500);
+			}
+
+			function pulldownLoading() {
+				mui('#pullrefresh').pullRefresh().pulldownLoading();
+			}
+
+			function initPage() {
+				if (checkLoginStatus()) {
+					plus.nativeUI.showWaiting();
+					setTimeout(function() {
+						plus.nativeUI.closeWaiting();
+						pulldownLoading();
+					}, 1000);
+				}
+			}
+
+			function clearPage() {
+				var table = document.body.querySelector('.mui-table-view');
+				table.innerHTML = '';
+			}
+			//打开详情页面
+			function openCoursePage(extras) {
+				return mui.openWindow({
+					url: 'course.html',
+					id: 'course.html',
+					show: {
+						aniShow: 'slide-out-bottom'
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...' //等待对话框上显示的提示内容
+					},
+					extras: extras
+				});
+			}
+			mui.init({
+				statusBarBackground: '#000',
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						callback: pulldownRefresh
+					}
+				}
+			});
+			mui.plusReady(function() {
+				window.addEventListener('initPage', function(event) {
+					initPage();
+				});
+				window.addEventListener('clearPage', function(event) {
+					clearPage();
+				});
+				initPage();
+				//点击列表
+				mui('.mui-table-view').on('tap', '.mui-table-view-cell', function() {
+					//获取courseId
+					var courseId = this.getAttribute('courseId');
+					//name
+					var name = this.querySelector('.course-name').innerText;
+					openCoursePage({
+						courseId: courseId,
+						name: name
+					});
+				})
+			});
+		</script>
+	</body>
+
+</html>

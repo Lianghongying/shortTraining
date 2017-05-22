@@ -1,0 +1,227 @@
+{
+  "login.html": {
+    "href": "login.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/mui.enterfocus.js",
+      "js/common.js"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "changePwd.html": {
+    "href": "changePwd.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/common.js"
+    ],
+    "refer": [
+      "user.html"
+    ],
+    "priority": 0
+  },
+  "user.html": {
+    "href": "user.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/common.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": [
+      "changePwd.html",
+      "setIDCard.html",
+      "login.html"
+    ],
+    "priority": 0
+  },
+  "setIDCard.html": {
+    "href": "setIDCard.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/common.js"
+    ],
+    "refer": [
+      "user.html"
+    ],
+    "priority": 0
+  },
+  "userScore.html": {
+    "href": "userScore.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/common.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "newHomework.html": {
+    "href": "newHomework.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/font-awesome.min.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/mui.zoom.js",
+      "js/mui.previewimage.js",
+      "js/common.js"
+    ],
+    "refer": [
+      "course.html"
+    ],
+    "priority": 0
+  },
+  "homeworkDetail.html": {
+    "href": "homeworkDetail.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/common.js"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "courseImgs.html": {
+    "href": "courseImgs.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/font-awesome.min.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/mui.zoom.js",
+      "js/mui.previewimage.js",
+      "js/common.js"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "homework.html": {
+    "href": "homework.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/mui.zoom.js",
+      "js/mui.previewimage.js",
+      "js/common.js"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "attendanceDetail.html": {
+    "href": "attendanceDetail.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/common.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "course.html": {
+    "href": "course.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/font-awesome.min.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jquery-1.11.3.js",
+      "js/mui.zoom.js",
+      "js/mui.previewimage.js",
+      "js/common.js",
+      "fonts/fontawesome-webfont.woff",
+      "fonts/mui.ttf"
+    ],
+    "refer": [
+      "userScore.html",
+      "newHomework.html",
+      "homeworkDetail.html",
+      "courseImgs.html",
+      "homework.html",
+      "attendanceDetail.html"
+    ],
+    "priority": 0
+  },
+  "courseList.html": {
+    "href": "courseList.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/common.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": [
+      "course.html"
+    ],
+    "priority": 0
+  },
+  "qrcode_scan.html": {
+    "href": "qrcode_scan.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/common.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": [],
+    "priority": 0
+  },
+  "index.html": {
+    "href": "index.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/common.js",
+      "fonts/mui.ttf",
+      "fonts/iconfont.ttf",
+      "courseList.html"
+    ],
+    "refer": [
+      "login.html",
+      "setIDCard.html",
+      "courseList.html",
+      "qrcode_scan.html",
+      "user.html"
+    ],
+    "priority": 0
+  }
+}

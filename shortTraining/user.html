@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-table-view {
+				margin-top: 20px;
+			}
+			
+			.mui-table-view:first-child {
+				margin-top: 15px;
+			}
+			
+			.mui-scroll {
+				padding-bottom: 60px;
+			}
+			
+			#idCard {
+				margin-right: 20px;
+			}
+			
+			#userinfo span {
+				position: absolute;
+				right: 10px;
+				left: 100px;
+				text-align: right;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-chevron">
+						<li class="mui-table-view-cell mui-media">
+							<a>
+								<div class="mui-media-body">
+									<span id="name"></span>
+									<p class='mui-ellipsis'>账号:<span id="account"></span></p>
+								</div>
+							</a>
+						</li>
+					</ul>
+					<!-- .mui-table-view end-->
+
+					<ul id="userinfo" class="mui-table-view">
+						<li class="mui-table-view-cell">
+							<a>手机号<span id="mobile" class="mui-pull-right"></span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>邮箱地址<span id="email" class="mui-pull-right"></span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>单位<span id="company" class="mui-pull-right"></span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>职务<span id="title" class="mui-pull-right"></span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a id="setIDCard" class="mui-navigate-right">身份证<span id="idCard" class="mui-pull-right"></span></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a>是否公开手机号
+								<div id="openMobile" class="mui-switch mui-switch-mini mui-switch-blue mui-pull-right">
+								  <div class="mui-switch-handle"></div>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a id="changePwd" class="mui-navigate-right">密码修改</a>
+						</li>
+					</ul>
+					<!-- .mui-table-view end-->
+
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">
+							<a id="checkVersion">版本更新 <span id="version" class="mui-pull-right"></span></a>
+						</li>
+					</ul>
+					<!-- .mui-table-view end-->
+
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell" style="text-align: center;">
+							<a id="logoutBtn" class="">退出登录</a>
+						</li>
+					</ul>
+					<!-- .mui-table-view end-->
+
+				</div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//退出登录
+			function logout() {
+				localStorage.clear();
+//				mui.back();
+				showLoginPage();
+
+			}
+
+			function initPage() {
+				
+				document.getElementById('version').innerText = getVersion();
+				if (checkLoginStatus()) {
+					var user = getUserInfo();
+					if (user.name) {
+						document.getElementById('name').innerText = user.name;
+					}
+					if (user.account) {
+						document.getElementById('account').innerText = user.account;
+					}
+					if (user.mobile) {
+						document.getElementById('mobile').innerText = user.mobile;
+					}
+					if (user.email) {
+						document.getElementById('email').innerText = user.email;
+					}
+					if (user.company) {
+						document.getElementById('company').innerText = user.company;
+					}
+					if (user.title) {
+						document.getElementById('title').innerText = user.title;
+					}
+					if (user.idCard) {
+						document.getElementById('idCard').innerText = user.idCard;
+					}
+					var isActive = document.getElementById("openMobile").classList.contains("mui-active");
+					if (user.other && user.other == 'open') {
+						if (!isActive) {
+							mui("#openMobile").switch().toggle();
+						}
+					} else {
+						if (isActive) {
+							mui("#openMobile").switch().toggle();
+						}
+					}
+				}
+			}
+
+			function clearPage() {
+				document.getElementById('version').innerText = '';
+				document.getElementById('name').innerText = '';
+				document.getElementById('account').innerText = '';
+				document.getElementById('mobile').innerText = '';
+				document.getElementById('email').innerText = '';
+				document.getElementById('company').innerText = '';
+				document.getElementById('title').innerText = '';
+				document.getElementById('idCard').innerText = '';
+			}
+			//打开修改密码页面
+			function openChangePwdPage() {
+				return mui.openWindow({
+					url: 'changePwd.html',
+					id: 'changePwd.html',
+					show: {
+						aniShow: 'slide-out-bottom'
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...' //等待对话框上显示的提示内容
+					}
+				});
+			}
+			//公开手机号码
+			function openMobile(status) {
+				plus.nativeUI.showWaiting();
+				ajax({
+					url: '/training/user/openMoblie/' + getUserId(),
+					type: 'POST',
+					contentType: 'application/x-www-form-urlencoded',
+					data: 'status=' + status,
+					success: function(json, t, xhr) {
+						plus.nativeUI.closeWaiting();
+						if (ajaxSuccess(json)) {
+							var user = getUserInfo();
+							user.other = status;
+							localStorage.setItem('userData', JSON.stringify(user));
+						} else {
+							plus.ui.toast('操作失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.ui.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			//更新IDCard
+			function updateIDCard() {
+				var user = getUserInfo();
+				if (user.idCard) {
+					document.getElementById('idCard').innerText = user.idCard;
+				}
+			}
+			//显示版本更新提示框
+			function showVersionConfirm(version) {
+				var btnArray = ['立即更新', '取消'];
+				if (version.forceUpdate && version.forceUpdate == 'true') {
+					btnArray = ['立即更新'];
+				}
+				mui.confirm(version.versionDesc, '发现新版本 ' + version.currentVersion, btnArray, function(e) {
+					if (e.index == 0) {
+						var url = '';
+						if (version.clientType == 'iOS') {
+							url = version.downLoadUrl;
+						} else {
+							url = HOST + '/training/filesys/download/' + version.downLoadUrl;
+						}
+						plus.runtime.openURL(url);
+					} else {
+						if (version.forceUpdate && version.forceUpdate == 'true') {
+							showVersionConfirm(version);
+													}
+					}
+				});
+			}
+			//版本检查
+			
+			function checkVersion(flag) {
+				
+				var clientType = plus.os.name;
+				ajax({
+					url: '/training/version/check?clientType=' + encodeURIComponent(clientType) + '&id=' + encodeURIComponent(getVersion()),
+					type: 'GET',
+					success: function(json) {
+						if (ajaxSuccess(json)) {
+							if (json.data && json.data.id && json.data.downLoadUrl && json.data.downLoadUrl != '') {
+								
+								hasNewVersion();
+								showVersionConfirm(json.data);
+							} else if (flag) {
+								
+								$('#version').html(getVersion());
+								plus.ui.toast('您当前使用的已是最新版本');
+							}
+						}
+					}
+				});
+			}
+			//有新版本
+			function hasNewVersion() {
+				
+				$('#version').html('<span class="mui-badge mui-badge-danger">new</span> ' + getVersion());
+			}
+			mui.init({
+				statusBarBackground: '#000'
+			});
+			mui.plusReady(function() {
+				mui('.mui-scroll-wrapper').scroll({
+					deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+				});
+				document.addEventListener('updateIDCard', function(event) {
+					updateIDCard();
+				});
+				//退出登录事件绑定
+				var logoutBtn = document.getElementById('logoutBtn');
+				logoutBtn.addEventListener('tap', function(event) {
+					logout();
+				});
+				window.addEventListener('hasNewVersion', function(event) {
+					hasNewVersion();
+				});
+				window.addEventListener('checkVersion', function(event) {
+					checkVersion();
+				});
+				window.addEventListener('initPage', function(event) {
+					initPage();
+				});
+				window.addEventListener('clearPage', function(event) {
+					clearPage();
+				});
+				window.addEventListener('logoutEvent', function(event) {
+					logout();
+				});
+				//修改密码事件绑定
+				var changePwdBtn = document.getElementById('changePwd');
+				changePwdBtn.addEventListener('tap', function(event) {
+					openChangePwdPage();
+				});
+				//检查更新
+				var changePwdBtn = document.getElementById('checkVersion');
+				changePwdBtn.addEventListener('tap', function(event) {
+					checkVersion(true);
+				});
+				//设置公开手机号码
+				document.getElementById("openMobile").addEventListener("toggle", function(event) {
+					var status = ''; 
+					if (event.detail.isActive) {
+						status = 'open';
+					} else {
+						status = 'close';
+					}
+					var user = getUserInfo();
+					var other = user.other;
+					if (!other || other == '') {
+						other = 'close';
+					}
+					if (other != status) {
+						openMobile(status);
+					}
+				});
+				//点击修改身份证
+				var setIDCard = document.getElementById('setIDCard');
+				setIDCard.addEventListener('tap', function(event) {
+					openSetIDCardPage();
+				});
+				initPage();
+				checkVersion();
+				
+				
+				window.addEventListener('refresh', function(e) {  
+      		
+     			 var userWeb = plus.webview.getWebviewById("user");
+    			  userWeb.reload();
+   		  		 var ingCourseListWeb = plus.webview.getWebviewById("ingCourseList");
+    			  ingCourseListWeb.reload();
+   		 		  var endCourseListWeb = plus.webview.getWebviewById("endCourseList");
+    			  endCourseListWeb.reload();
+
+			});
+				
+			});
+		</script>
+	</body>
+
+</html>

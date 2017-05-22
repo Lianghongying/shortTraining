@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-bar-nav .mui-left {
+				color: #000;
+			}
+			
+			.mui-input-group {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 40%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 60%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 20px;
+				margin-bottom: 20px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			#scoreFile {
+				width: 100%;
+			}
+			
+			#scoreFile img {
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span> 返回
+			</button>
+			<h1 class="mui-title">我的考核</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="tvc" style="margin-top: 0;">
+				<div class="tvc">
+					<div style="padding: 15px 0; text-align: center; background: #fff;">
+						我的考核成绩：<span id="userScore"></span>
+					</div>
+
+					<div id="scoreFile">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//我的考核
+			function showMyScore() {
+				plus.nativeUI.showWaiting();
+				var current = plus.webview.currentWebview();
+				ajax({
+					url: '/training/user/score/' + getUserId() + '/' + current.courseId,
+					type: 'POST',
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if (ajaxSuccess(json)) {
+							$('#userScore').text(json.data.score);
+							if (json.data.fileId && json.data.fileId != '') {
+								$('#scoreFile').append('<img src="' + HOST + '/training/filesys/download/' + json.data.fileId + '">')
+								$('#scoreFile').attr('fileId', json.data.fileId);
+								$('#scoreFile').append('<div class="mui-content-padded"><button id="saveBtn" class="mui-btn mui-btn-block mui-btn-default">保存到手机</button></div>');
+							}
+						} else if (json.code == '10007') {
+							$('#userScore').text('暂无');
+						} else {
+							plus.nativeUI.toast('操作失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			mui.init({
+				statusBarBackground: '#000'
+			});
+			mui.plusReady(function() {
+				showMyScore();
+				mui('#scoreFile').on('tap', 'button', function() {
+					plus.nativeUI.showWaiting();
+					var fileId = $('#scoreFile').attr('fileId');
+					
+					var options = {
+                method: "GET",
+                filename: "_doc/" + Date.parse(new Date()) + '.jpg'
+            }
+					
+					var dtask = plus.downloader.createDownload(HOST + '/training/filesys/download/' + fileId, options, function(d, status) {
+//					var dtask = plus.downloader.createDownload('http://dxb.gdgbpx.com/adf/2017-05-10/TT5VRwco/score.jpg', options, function(d, status) { 
+					if (status == 200) {
+							plus.gallery.save(d.filename, function() {
+								alert("已保存到相册");
+							});
+						} else {
+							alert("下载图片失败: " + status);
+						}
+						plus.nativeUI.closeWaiting();
+					});
+					dtask.start();
+				});
+			});
+		</script>
+	</body>
+
+</html>

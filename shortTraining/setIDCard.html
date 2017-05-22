@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-bar-nav .mui-left {
+				color: #000;
+			}
+			
+			.mui-input-group {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 40%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 60%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">设置身份证信息</h1>
+		</header>
+
+		<div class="mui-content">
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>身份证</label>
+					<input id='idCard' type="text" class="mui-input-clear mui-input" placeholder="请输入身份证号码">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='changeBtn' class="mui-btn mui-btn-block mui-btn-primary">确定</button>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//修改密码
+			function changeIDCard() {
+				var idCard = $('#idCard').val();
+				if (idCard == '') {
+					plus.ui.toast('请输入身份证号码');
+					return;
+				} else if (!identityCodeValid(idCard)) {
+					plus.ui.toast('请输入正确的身份证号码');
+					return;
+				}
+				plus.nativeUI.showWaiting();
+				ajax({
+					url: '/training/user/updateIDCard/' + getUserId(),
+					type: 'POST',
+					contentType: 'application/x-www-form-urlencoded',
+					data: 'idCard=' + idCard,
+					success: function(json, t, xhr) {
+						plus.nativeUI.closeWaiting();
+						if (ajaxSuccess(json)) {
+							var user = getUserInfo();
+							user.idCard = idCard;
+							localStorage.setItem('userData', JSON.stringify(user));
+							var userWebView = plus.webview.getWebviewById('user.html');
+							mui.fire(userWebView, 'updateIDCard');
+							mui.back();
+						} else if (json.code == '10003') {
+							plus.ui.toast('参数为空');
+						} else {
+							plus.ui.toast('操作失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.ui.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			mui.init({
+				statusBarBackground: '#000'
+			});
+			mui.plusReady(function() {
+				//修改密码按钮点击事件
+				var changeBtn = document.getElementById('changeBtn');
+				changeBtn.addEventListener('tap', function(event) {
+					changeIDCard();
+				});
+				var user = getUserInfo();
+				if(user.idCard && user.idCard != ''){
+					$('#idCard').val(user.idCard);
+				}
+			});
+		</script>
+	</body>
+
+</html>

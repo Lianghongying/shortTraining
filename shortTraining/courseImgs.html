@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-scroll {
+				top: 50px;
+				padding-bottom: 60px;
+			}
+			
+			.mui-bar-nav .mui-left {
+				color: #000;
+			}
+			
+			.course-imgs {
+				margin: 0;
+				padding: 0;
+			}
+			
+			.course-imgs li {
+				float: left;
+				padding: 0;
+				margin: 0 0 6px 6px;
+				overflow: hidden;
+				position: relative;
+				text-align: center;
+			}
+			
+			.course-imgs li:last-child {
+				margin-right: 6px;
+			}
+			
+			.course-imgs li img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.course-imgs li .course-img-del {
+				position: absolute;
+				right: 0;
+				top: 0;
+				background: red;
+				color: #fff;
+				display: inline-block;
+				border-radius: 50%;
+				width: 20px;
+				height: 20px;
+				text-align: center;
+				line-height: 20px;
+				cursor: pointer;
+				display: none;
+			}
+			
+			.course-imgs li .course-img-add-btn,
+			.course-imgs li .course-img-remove-btn {
+				width: 100%;
+				height: 100%;
+				border: 1px solid #ddd;
+				text-align: center;
+				font-size: 20px;
+				cursor: pointer;
+				color: #323B55;
+				position: relative;
+			}
+			
+			.course-imgs li .course-img-add-btn:hover,
+			.course-imgs li .course-img-remove-btn:hover {
+				background: #f5f5f5;
+			}
+			
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+			
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+			
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+			
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+			
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+			
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+			
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+			
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+			
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+			
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+			
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+			
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+			
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+			
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+			
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span> 返回
+			</button>
+			<h1 class="mui-title">培训场景</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<input id="courseId" type="hidden" value="" />
+					<ul class="course-imgs">
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.js"></script>
+		<script src="js/mui.zoom.js"></script>
+		<script src="js/mui.previewimage.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//设置课程图片
+			function setCoursePhotos(photos, user) {
+				var ul = $('.course-imgs');
+				var w = ($('.course-imgs').parent().width() - 30) / 4;
+				if (photos && photos.length > 0) {
+					for (var i = 0; i < photos.length; i++) {
+						var li = '<li photoId="' + photos[i].id + '" style="width:' + w + 'px; height:' + w + 'px;"><img src="' + HOST + '/training/filesys/download/' + photos[i].fileId + '?thumb" data-preview-src="" data-preview-group="1" ><span class="course-img-del" onclick="delCourseImg(this)"><i class="fa fa-minus"></i></span></li>';
+						ul.append(li);
+					}
+				}
+				if (user.type == '0' || user.type == '2') {
+					ul.append('<li style="width:' + w + 'px; height:' + w + 'px;"><div class="course-img-add-btn" style="line-height: ' + (w - 6) + 'px;"><i class="fa fa-plus"></i></div></li>');
+					ul.append('<li style="width:' + w + 'px; height:' + w + 'px;"><div class="course-img-remove-btn" style="line-height: ' + (w - 6) + 'px;"><i class="fa fa-minus"></i></div></li>');
+				}
+				mui.previewImage();
+				mui('.mui-scroll-wrapper').scroll().scrollTo(0, 0, 100); //100毫秒滚动到顶
+			}
+			//查询培训场景
+			function loadCoursePhotos(courseId) {
+				plus.nativeUI.showWaiting();
+				ajax({
+					url: '/training/course/imgs/' + courseId,
+					type: 'GET',
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if (ajaxSuccess(json)) {
+							var photos = json.data;
+							var user = getUserInfo();
+							setCoursePhotos(photos, user)
+						} else {
+							plus.nativeUI.toast('查询失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('查询失败，请稍后再试');
+					}
+				});
+			}
+			// 删除课程图片
+			function delCourseImg(target) {
+				
+				var photoId = $(target).parent().attr('photoId');
+				plus.nativeUI.showWaiting();
+				ajax({
+					url: '/training/course/delCoursePhoto/' + photoId,
+					type: 'POST',
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if (ajaxSuccess(json)) {
+							$('.course-imgs li[photoId="' + photoId + '"]').remove();
+							$('.course-img-del').hide();
+							$('.course-img-remove-btn').empty();
+							$('.course-img-remove-btn').append('<i class="fa fa-minus"></i>');
+							mui.previewImage();
+						} else {
+							plus.nativeUI.toast('操作失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			// 添加课程图片
+			function addCoursePhoto(courseId, fileId) {
+				plus.nativeUI.showWaiting();
+				var coursePhoto = {
+					courseId: courseId,
+					fileId: fileId
+				};
+				ajax({
+					url: '/training/course/addCoursePhoto',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(coursePhoto),
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if (ajaxSuccess(json)) {
+							var w = ($('.course-imgs').parent().width() - 30) / 4;
+							var $li = $('<li photoId="' + json.data.id + '" style="width:' + w + 'px; height:' + w + 'px;"><img src="' + HOST + '/training/filesys/download/' + json.data.fileId + '?thumb"  data-preview-src="" data-preview-group="1" ><span class="course-img-del" onclick="delCourseImg(this)"><i class="fa fa-minus"></i></span></li>')
+							if ($('.course-img-add-btn').length > 0) {
+								$('.course-img-add-btn').parent().before($li);
+							} else {
+								$('.course-imgs').append($li);
+							}
+							mui.previewImage();
+						} else {
+							plus.nativeUI.toast('上传图片失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('上传图片失败，请稍后再试');
+					}
+				});
+			}
+			//上传图片
+			function uploadImg(path) {
+				var img = new Image();
+				img.onload = function() {
+					//生成比例 
+					var w = this.width;
+					var h = this.height;
+					var scale = w / h;
+					w = 1000 || w;
+					h = (w / scale).toFixed(0);
+					//生成canvas
+					var canvas = document.createElement('canvas');
+					var ctx = canvas.getContext('2d');
+					$(canvas).attr({
+						width: w,
+						height: h
+					});
+					ctx.drawImage(this, 0, 0, w, h);
+					var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8); //1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
+					plus.nativeUI.showWaiting();
+					ajax({
+						url: '/training/filesys/uploadBase64?original&normalWidth=450&normalHeight=450&thumbWidth=' + w + '&thumbHeight=' + h,
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify({
+							path: base64
+						}),
+						success: function(json) {
+							plus.nativeUI.closeWaiting();
+							if (ajaxSuccess(json)) {
+								addCoursePhoto($('#courseId').val(), json.data.id);
+							} else {
+								plus.nativeUI.toast('上传图片失败，请稍后再试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting();
+							plus.nativeUI.toast('上传图片失败，请稍后再试');
+						}
+					});
+				}
+				img.src = path;
+			}
+			// 拍照
+			function getCameraImage() {
+				var cmr = plus.camera.getCamera();
+				cmr.captureImage(function(p) {
+					plus.gallery.save(p);
+					plus.io.resolveLocalFileSystemURL(p, function(entry) {
+						uploadImg(entry.toLocalURL());
+					}, function(e) {
+						plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+					});
+				}, function(e) {
+					plus.nativeUI.toast("失败：" + e.message);
+				}, {
+					filename: "_doc/camera/",
+					index: 1
+				});
+			}
+			//系统相册
+			function getGalleryImage() {
+				// 从相册中选择图片
+				plus.gallery.pick(function(path) {
+					uploadImg(path);
+				}, function(e) {}, {
+					filter: "image"
+				});
+			}
+			//弹出ActionSheet
+			function showActionSheet() {
+				var bts = [{
+					title: "拍照",
+				}, {
+					title: "从手机相册选择"
+				}];
+				plus.nativeUI.actionSheet({
+						title: "请选择操作",
+						cancel: "取消",
+						buttons: bts
+					},
+					function(e) {
+						if (e.index == 1) {
+							getCameraImage();
+						} else if (e.index == 2) {
+							getGalleryImage();
+						}
+					}
+				);
+			}
+			mui.init({
+				statusBarBackground: '#000'
+			});
+			mui.plusReady(function() {
+				$('.course-imgs').empty();
+				var current = plus.webview.currentWebview();
+				$('#courseId').val(current.courseId);
+				loadCoursePhotos(current.courseId);
+				//删除照片按钮
+				mui('.course-imgs').on('tap', '.course-img-remove-btn', function() {
+					if ($(this).text() == '取消') {
+						$('.course-img-del').hide();
+						$(this).empty();
+						$(this).append('<i class="fa fa-minus"></i>');
+					} else {
+						$('.course-img-del').show();
+						$(this).empty();
+						$(this).text('取消');
+					}
+				});
+				//添加照片按钮
+				mui('.course-imgs').on('tap', '.course-img-add-btn', function() {
+					showActionSheet();
+				});
+			});
+		</script>
+	</body>
+
+</html>

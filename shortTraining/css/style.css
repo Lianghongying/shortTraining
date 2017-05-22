@@ -1,0 +1,17 @@
+.mui-bar-nav {
+	background: #f7f7f7;
+	color: #000;
+	box-shadow: 0 1px 6px #ccc;
+}
+
+.mui-title {
+	color: #000;
+}
+
+.mui-bar-tab .mui-tab-item.mui-active {
+	color: #323B55;
+}
+
+.mui-bar-nav .mui-left {
+	color: #000;
+}

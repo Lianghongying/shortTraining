@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-scroll-wrapper {
+				top: 45px;
+				padding-bottom: 40px;
+			}
+			
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+			
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+			
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+			
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+			
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+			
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+			
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+			
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+			
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+			
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+			
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+			
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+			
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+			
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+			
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			
+			.mui-bar-nav .mui-left {
+				color: #000;
+			}
+			
+			#imgs p {
+				padding: 10px 15px 0;
+			}
+			
+			#imgs div {
+				width: 100%;
+				padding: 10px 10px;
+				background: #fff;
+			}
+			
+			.homework-imgs {
+				margin: 0;
+				padding: 0;
+			}
+			
+			.homework-imgs:before,
+			.homework-imgs:after {
+				content: " ";
+				display: table;
+			}
+			
+			.homework-imgs:after {
+				clear: both;
+			}
+			
+			.homework-imgs li {
+				float: left;
+				margin: 0;
+				padding: 0 0 6px 6px;
+				overflow: hidden;
+				position: relative;
+				text-align: center;
+			}
+			
+			.homework-imgs li img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.homework-imgs li .course-img-del {
+				position: absolute;
+				right: 0;
+				top: 0;
+				background: red;
+				color: #fff;
+				display: inline-block;
+				border-radius: 50%;
+				width: 20px;
+				height: 20px;
+				text-align: center;
+				line-height: 20px;
+				cursor: pointer;
+				display: none;
+			}
+			
+			.homework-imgs li .course-img-add-btn,
+			.homework-imgs li .course-img-remove-btn {
+				width: 100%;
+				height: 100%;
+				border: 1px solid #ddd;
+				text-align: center;
+				font-size: 20px;
+				cursor: pointer;
+				color: #323B55;
+				position: relative;
+			}
+			
+			.homework-imgs li .course-img-add-btn:hover,
+			.homework-imgs li .course-img-remove-btn:hover {
+				background: #f5f5f5;
+			}
+			
+			#content p {
+				padding: 10px 15px 0;
+			}
+			
+			#content div {
+				width: 100%;
+				padding: 10px 10px;
+				background: #fff;
+				font-size: 14px;
+			}
+			
+			textarea {
+				margin: 0;
+				font-size: 14px;
+				line-height: 18px;
+				height: 180px;
+				padding: 5px;
+				resize: none;
+				overflow: auto;
+			}
+			
+			.mui-content-padded {
+				margin-top: 10px;
+			}
+			
+			#addBtn {
+				padding: 10px 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span> 返回
+			</button>
+			<h1 class="mui-title">写作业</h1>
+		</header>
+
+		<div class="mui-content">
+			<input id="homeworkId" type="hidden" value="" />
+			<input id="courseId" type="hidden" value="" />
+			<p style="background: #fff; padding: 5px 15px 5px 15px;">作业提交之前，您的每次操作都将自动存为草稿，下次进入写作业界面时会自动加载。</p>
+			<div id="imgs">
+				<p>图片</p>
+				<div>
+					<ul class="homework-imgs">
+
+					</ul>
+				</div>
+			</div>
+			<div id="content">
+				<p>内容</p>
+				<div class="row mui-input-row">
+					<textarea placeholder="内容..." class="mui-input-clear"></textarea>
+				</div>
+			</div>
+			<div class="mui-content-padded">
+				<button id='addBtn' class="mui-btn mui-btn-block mui-btn-primary">提交</button>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.js"></script>
+		<script src="js/mui.zoom.js"></script>
+		<script src="js/mui.previewimage.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//查询作业详情
+			function initPage(homeworkId, courseId) {
+				$('#homeworkId').val(homeworkId);
+				$('#courseId').val(courseId);
+				var ul = $('.homework-imgs');
+				ul.empty();
+				var w = ul.parent().width() / 4;
+				ul.append('<li style="width:' + w + 'px; height:' + w + 'px;"><div class="course-img-add-btn" style="line-height: ' + (w - 26) + 'px;"><i class="fa fa-plus"></i></div></li>');
+				ul.append('<li style="width:' + w + 'px; height:' + w + 'px;"><div class="course-img-remove-btn" style="line-height: ' + (w - 26) + 'px;"><i class="fa fa-minus"></i></div></li>');
+				loadCacheHomework();
+			}
+			//加载缓存
+			function loadCacheHomework() {
+				var obj = getHomeworkCache();
+				if (obj.imgs && obj.imgs.length > 0) {
+					for (var i = 0; i < obj.imgs.length; i++) {
+						addHomeworkImg(obj.imgs[i]);
+					}
+				}
+				$('textarea').val(obj.content);
+			}
+			//删除作业缓存
+			function delHomeworkCache() {
+				var userId = getUserId();
+				var homeworkId = $('#homeworkId').val();
+				var key = 'homework_cache_' + userId + '_' + homeworkId;
+				localStorage.removeItem(key);
+			}
+			//获取作业缓存
+			function getHomeworkCache() {
+				var userId = getUserId();
+				var homeworkId = $('#homeworkId').val();
+				var key = 'homework_cache_' + userId + '_' + homeworkId;
+				return JSON.parse(localStorage.getItem(key) || '{"content": "", "imgs": []}');
+			}
+			//设置作业缓存
+			function setHomeworkCache(obj) {
+				var userId = getUserId();
+				var homeworkId = $('#homeworkId').val();
+				var key = 'homework_cache_' + userId + '_' + homeworkId;
+				localStorage.setItem(key, JSON.stringify(obj))
+			}
+			//添加图片缓存
+			function addCacheImg(fileId) {
+				var obj = getHomeworkCache();
+				obj.imgs.push(fileId);
+				setHomeworkCache(obj);
+			}
+			//删除图片缓存
+			function delCacheImg(fileId) {
+				var obj = getHomeworkCache();
+				for (var i = obj.imgs.length - 1; i >= 0; i--) {
+					if (obj.imgs[i] == fileId) {
+						obj.imgs.splice(i, 1);
+					}
+				}
+				setHomeworkCache(obj);
+			}
+			//设置文字缓存
+			function setCacheContent(content) {
+				var obj = getHomeworkCache();
+				obj.content = content;
+				setHomeworkCache(obj);
+			}
+			//提交作业
+			function addUserHomework() {
+				var homework = {
+					homeworkId: $('#homeworkId').val(),
+					courseId: $('#courseId').val(),
+					userId: getUserId(),
+					content: $('textarea').val(),
+					attachments: ''
+				}
+				var imgs = $('.homework-imgs li[fileId]');
+				var attachments = [];
+				for (var i = 0; i < imgs.length; i++) {
+					var fileId = $(imgs[i]).attr('fileId');
+					attachments.push(fileId);
+				}
+				if (attachments.length > 0) {
+					homework.attachments = attachments.join(',');
+				}
+				if (homework.attachments == '' && homework.content == '') {
+					plus.nativeUI.toast('请输入内容或添加图片');
+					return;
+				}
+				ajax({
+					url: '/training/homework/addUserHomework',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(homework),
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if (ajaxSuccess(json)) {
+							var courseDetail = plus.webview.getWebviewById('course.html');
+							var uh = json.data;
+							mui.fire(courseDetail, 'finishHomework', {
+								homeworkId: uh.homeworkId,
+								userHomeworkId: uh.id
+							});
+							delHomeworkCache();
+							mui.back();
+						} else {
+							plus.nativeUI.toast('操作失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			// 删除图片
+			function delHomeworkImg(target) {
+				var fileId = $(target).parent().attr('fileId');
+				$('.homework-imgs li[fileId="' + fileId + '"]').remove();
+				$('.course-img-del').hide();
+				$('.course-img-remove-btn').empty();
+				$('.course-img-remove-btn').append('<i class="fa fa-minus"></i>');
+				mui.previewImage();
+				delCacheImg(fileId);
+			}
+			//新增图片
+			function addHomeworkImg(fileId) {
+				var w = $('.homework-imgs').parent().width() / 4;
+				var $li = $('<li fileId="' + fileId + '" style="width:' + w + 'px; height:' + w + 'px;"><img src="' + HOST + '/training/filesys/download/' + fileId + '?thumb"  data-preview-src="" data-preview-group="1" ><span class="course-img-del" onclick="delHomeworkImg(this)"><i class="fa fa-minus"></i></span></li>')
+				if ($('.course-img-add-btn').length > 0) {
+					$('.course-img-add-btn').parent().before($li);
+				} else {
+					$('.homework-imgs').append($li);
+				}
+				mui.previewImage();
+			}
+			//上传图片
+			function uploadImg(path) {
+				var img = new Image();
+				img.onload = function() {
+					//生成比例 
+					var w = this.width;
+					var h = this.height;
+					var scale = w / h;
+					w = 1000 || w;
+					h = (w / scale).toFixed(0);
+					//生成canvas
+					var canvas = document.createElement('canvas');
+					var ctx = canvas.getContext('2d');
+					$(canvas).attr({
+						width: w,
+						height: h
+					});
+					ctx.drawImage(this, 0, 0, w, h);
+					var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8); //1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
+					plus.nativeUI.showWaiting();
+					ajax({
+						url: '/training/filesys/uploadBase64?original&normalWidth=450&normalHeight=450&thumbWidth=' + w + '&thumbHeight=' + h,
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify({
+							path: base64
+						}),
+						success: function(json) {
+							plus.nativeUI.closeWaiting();
+							if (ajaxSuccess(json)) {
+								addHomeworkImg(json.data.id);
+								addCacheImg(json.data.id);
+							} else {
+								plus.nativeUI.toast('上传图片失败，请稍后再试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting();
+							plus.nativeUI.toast('上传图片失败，请稍后再试');
+						}
+					});
+				}
+				img.src = path;
+			}
+			// 拍照
+			function getCameraImage() {
+				var cmr = plus.camera.getCamera();
+				cmr.captureImage(function(p) {
+					plus.gallery.save(p);
+					plus.io.resolveLocalFileSystemURL(p, function(entry) {
+						uploadImg(entry.toLocalURL());
+					}, function(e) {
+						plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+					});
+				}, function(e) {
+					plus.nativeUI.toast("失败：" + e.message);
+				}, {
+					filename: "_doc/camera/",
+					index: 1
+				});
+			}
+			//系统相册
+			function getGalleryImage() {
+				// 从相册中选择图片
+				plus.gallery.pick(function(path) {
+					uploadImg(path);
+				}, function(e) {}, {
+					filter: "image"
+				});
+			}
+			//弹出ActionSheet
+			function showActionSheet() {
+				var bts = [{
+					title: "拍照",
+				}, {
+					title: "从手机相册选择"
+				}];
+				plus.nativeUI.actionSheet({
+						title: "请选择操作",
+						cancel: "取消",
+						buttons: bts
+					},
+					function(e) {
+						if (e.index == 1) {
+							getCameraImage();
+						} else if (e.index == 2) {
+							getGalleryImage();
+						}
+					}
+				);
+			}
+			mui.init({
+				statusBarBackground: '#000'
+			});
+			mui.plusReady(function() {
+				// 设置系统状态栏样式为浅色文字
+				plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+				var current = plus.webview.currentWebview();
+				initPage(current.homeworkId, current.courseId);
+				//删除照片按钮
+				mui('.homework-imgs').on('tap', '.course-img-remove-btn', function() {
+					if ($(this).text() == '取消') {
+						$('.course-img-del').hide();
+						$(this).empty();
+						$(this).append('<i class="fa fa-minus"></i>');
+					} else {
+						$('.course-img-del').show();
+						$(this).empty();
+						$(this).text('取消');
+					}
+				});
+				//添加照片按钮
+				mui('.homework-imgs').on('tap', '.course-img-add-btn', function() {
+					showActionSheet();
+				});
+				mui('.mui-content-padded').on('tap', '#addBtn', function() {
+					plus.nativeUI.confirm('作业提交后不可修改，您确定要提交？', function(e) {
+						if (e.index == 0) {
+							addUserHomework();
+						}
+					}, '操作提示', ['确定', '取消']);
+				});
+				$('textarea').change(function() {
+					setCacheContent($('textarea').val());
+				});
+			});
+		</script>
+	</body>
+
+</html>

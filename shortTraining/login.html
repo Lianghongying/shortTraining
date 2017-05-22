@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-input-group {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">登录</h1>
+		</header>
+
+		<div class="mui-content">
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='loginBtn' class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.enterfocus.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//登录
+			function login() {
+				var account = document.getElementById('account');
+				var password = document.getElementById('password');
+				if (account.value == '' || password.value == '') {
+					plus.ui.toast('账号或密码不能为空');
+					return;
+				}
+				plus.nativeUI.showWaiting();
+				ajax({
+					url: '/training/user/login',
+					type: 'POST',
+					contentType: 'application/x-www-form-urlencoded',
+					data: 'account=' + account.value + '&password=' + password.value,
+					success: function(json, t, xhr) {
+						plus.nativeUI.closeWaiting();
+						var token = xhr.getResponseHeader('token');
+						var loginTime = xhr.getResponseHeader('loginTime');
+						if (ajaxSuccess(json)) {
+							account.value = '';
+							password.value = '';
+							localStorage.setItem('userId', json.data.id);
+							localStorage.setItem('userData', JSON.stringify(json.data));
+							localStorage.setItem('token', token);
+							localStorage.setItem('loginTime', loginTime);
+							mui.back();
+							var callEvent = plus.webview.currentWebview().callEvent;
+							if (callEvent && callEvent != '') {
+								var view = plus.webview.getLaunchWebview();
+								mui.fire(view, callEvent);
+							}
+						} else if (json.code == '10001') {
+							plus.ui.toast('账号或密码错误');
+						} else {
+							plus.ui.toast('登录失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.ui.toast('登录失败，请稍后再试');
+					}
+				});
+			}
+			mui.init({
+				statusBarBackground: '#000',
+				
+   			 beforeback: function() {  
+  			  //获得列表界面的webview  
+  			  var list = plus.webview.currentWebview().opener();  
+ 			   //触发列表界面的自定义事件（refresh）,从而进行数据刷新  
+ 			   mui.fire(list, 'refresh');  
+ 			   //返回true，继续页面关闭逻辑  
+			    return true;  
+  			  }  
+
+			});
+			mui.plusReady(function() {
+				// 设置系统状态栏样式为浅色文字
+				plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+				//登录按钮点击事件
+				var loginButton = document.getElementById('loginBtn');
+				loginButton.addEventListener('tap', function(event) {
+					login();
+				});
+				
+				mui.enterfocus('#login-form input', function() {
+					mui.trigger(loginButton, 'tap');
+				});
+				
+		
+		
+				
+			});
+		</script>
+	</body>
+
+</html>

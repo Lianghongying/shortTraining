@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-scroll {
+				top: 45px;
+				padding-bottom: 50px;
+			}
+			
+			.mui-bar-nav .mui-left {
+				color: #000;
+			}
+			
+			.course-name {
+				color: #6179BF;
+				font-size: 18px;
+				padding: 0;
+				margin: 0 0 7px 0;
+			}
+			
+			.course-a {
+				margin-bottom: 2px;
+			}
+			
+			.course-a .course-l {
+				display: table-cell;
+				vertical-align: top;
+				color: #333;
+				white-space: nowrap;
+			}
+			
+			.course-a .course-r {
+				display: table-cell;
+				vertical-align: top;
+			}
+			
+			.course-imgs {
+				margin: 0;
+				padding: 0;
+			}
+			
+			.course-imgs li {
+				float: left;
+				margin: 0;
+				padding: 0 0 6px 6px;
+				overflow: hidden;
+				position: relative;
+				text-align: center;
+			}
+			
+			.course-imgs li img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.course-imgs li .course-img-del {
+				position: absolute;
+				right: 0;
+				top: 0;
+				background: red;
+				color: #fff;
+				display: inline-block;
+				border-radius: 50%;
+				width: 20px;
+				height: 20px;
+				text-align: center;
+				line-height: 20px;
+				cursor: pointer;
+				display: none;
+			}
+			
+			.course-imgs li .course-img-add-btn,
+			.course-imgs li .course-img-remove-btn {
+				width: 100%;
+				height: 100%;
+				border: 1px solid #ddd;
+				text-align: center;
+				font-size: 20px;
+				cursor: pointer;
+				color: #323B55;
+				position: relative;
+			}
+			
+			.course-imgs li .course-img-add-btn:hover,
+			.course-imgs li .course-img-remove-btn:hover {
+				background: #f5f5f5;
+			}
+			
+			.course-a .course-r .values {}
+			
+			.course-a .course-r .values i {
+				color: #a9a9a9;
+				font-size: 16px;
+				line-height: 21px;
+				cursor: pointer;
+				margin-right: 2px;
+			}
+			
+			.tv {
+				position: relative;
+				margin-top: 0;
+				margin-bottom: 0;
+				padding-left: 0;
+				list-style: none;
+				background-color: #fff;
+			}
+			
+			.tv:before {
+				position: absolute;
+				right: 0;
+				left: 0;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+				top: -1px;
+			}
+			
+			.tv:after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+			}
+			
+			.tv .tvc {
+				position: relative;
+				overflow: hidden;
+				padding: 11px 15px;
+				-webkit-touch-callout: none;
+				color: #737373;
+				font-size: 14px;
+			}
+			
+			.tv .tvc:after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 15px;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+			}
+			
+			.tv {
+				margin-top: 15px;
+			}
+			
+			.tvc {
+				color: #737373;
+				font-size: 14px;
+			}
+			
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+			
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+			
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+			
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+			
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+			
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+			
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+			
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+			
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+			
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+			
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+			
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+			
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+			
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+			
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+			
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			
+			.tvc1 {
+				position: relative;
+				overflow: hidden;
+				padding: 0 15px;
+				-webkit-touch-callout: none;
+				color: #737373;
+				font-size: 14px;
+			}
+			
+			.tvc1 .mui-table-view:before {
+				background-color: #fff;
+			}
+			
+			.attendance-cell {
+				font-size: 13px;
+				text-align: center;
+				float: left;
+			}
+			
+			.attendance-cell:first-child {
+				width: 70%;
+				text-align: left;
+			}
+			
+			.attendance-cell:last-child {
+				width: 30%;
+			}
+			
+			.assessList {
+				color: #737373;
+			}
+			
+			.assessList li {
+				list-style: none;
+			}
+			
+			.assessList .assess-name {
+				float: left;
+				text-align: right;
+				line-height: 43px;
+				font-size: 14px;
+			}
+			
+			.assessList .assess-val {
+				float: left;
+				margin-left: 5px;
+			}
+			
+			.assessList .assess-val i {
+				font-size: 20px;
+				padding: 0 12px;
+				line-height: 43px;
+				display: block;
+				float: left;
+			}
+			
+			.assessList .assess-val i.hover {
+				color: gold;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span> 返回
+			</button>
+			<h1 class="mui-title">培训班详情</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<!-- 基本信息 start-->
+					<div class="tv" style="margin-top: 0;">
+						<div class="tvc">
+							<input id="courseId" type="hidden" value="">
+							<h3 id="courseName" class="course-name">&nbsp;</h3>
+							<div class="course-a" id="classAdviserCourseA">
+								<div class="course-l">班主任：</div>
+								<div class="course-r">
+									<span id="classAdviser"></span>
+								</div>
+							</div>
+							<div class="course-a" id="teacherCourseA">
+								<div class="course-l">讲师：</div>
+								<div class="course-r">
+									<span id="teacher"></span>
+								</div>
+							</div>
+							<div class="course-a">
+								<div class="course-l">时间：</div>
+								<div class="course-r">
+									<span id="date">2016-03-30 至 2016-04-08</span>
+								</div>
+							</div>
+							<div class="course-a">
+								<div class="course-l">主办单位：</div>
+								<div class="course-r">
+									<span id="organizer"></span>
+								</div>
+							</div>
+							<div class="course-a">
+								<div class="course-l">地点：</div>
+								<div class="course-r">
+									<span id="addr"></span>
+								</div>
+							</div>
+							<div class="course-a">
+								<div class="course-l">简介：</div>
+								<div class="course-r">
+									<span id="description"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- 基本信息 end-->
+
+					<!-- 培训场景 start-->
+					<div class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a id="courseImgBtn" class="mui-navigate-right" style="color: #737373; font-size: 14px;">培训场景</a>
+							</li>
+						</ul>
+					</div>
+					<!-- 培训场景 end-->
+
+					<!-- 学员列表 start-->
+					<div class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">学员列表</a>
+								<ul id="students" class="mui-table-view mui-table-view-chevron">
+
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<!-- 学员列表 end-->
+
+					<!-- 我的考勤 start-->
+					<div class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">我的考勤</a>
+								<ul id="userAttendances" class="mui-table-view mui-table-view-chevron">
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<!-- 我的考勤 end-->
+
+					<!-- 学员考勤 start-->
+					<div class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">学员考勤</a>
+								<ul id="courseAttendances" class="mui-table-view mui-table-view-chevron">
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<!-- 学员考勤 end-->
+
+					<!-- 我的作业 start-->
+					<div class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">我的作业</a>
+								<ul id="userHomeworks" class="mui-table-view mui-table-view-chevron">
+
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<!-- 我的作业 end-->
+
+					<!-- 学员作业 start-->
+					<div class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">学员作业</a>
+								<ul id="courseHomeworks" class="mui-table-view mui-table-view-chevron">
+
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<!-- 学员作业 end-->
+
+					<!-- 课程评估 start-->
+					<div id="assessPanel" class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">课程评估</a>
+								<ul class="mui-table-view mui-table-view-chevron assessList">
+									<li class="mui-table-view-cell">
+										<div class="assess-name">培训实施</div>
+										<div class="assess-val" name="mgntVal">
+											<i class="fa fa-star" value="1"></i>
+											<i class="fa fa-star" value="2"></i>
+											<i class="fa fa-star" value="3"></i>
+											<i class="fa fa-star" value="4"></i>
+											<i class="fa fa-star" value="5"></i>
+										</div>
+									</li>
+
+									<li class="mui-table-view-cell">
+										<div class="assess-name">培训保障</div>
+										<div class="assess-val" name="courseVal">
+											<i class="fa fa-star" value="1"></i>
+											<i class="fa fa-star" value="2"></i>
+											<i class="fa fa-star" value="3"></i>
+											<i class="fa fa-star" value="4"></i>
+											<i class="fa fa-star" value="5"></i>
+										</div>
+									</li>
+
+									<li class="mui-table-view-cell">
+										<div class="assess-name">培训效果</div>
+										<div class="assess-val" name="teacherVal">
+											<i class="fa fa-star" value="1"></i>
+											<i class="fa fa-star" value="2"></i>
+											<i class="fa fa-star" value="3"></i>
+											<i class="fa fa-star" value="4"></i>
+											<i class="fa fa-star" value="5"></i>
+										</div>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<!-- 课程评估 end-->
+
+					<!-- 讲师评估 start-->
+					<div id="teacherAssess">
+					</div>
+					<!-- 讲师评估 end-->
+
+					<!-- 我的考核 start-->
+					<div class="tv">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a id="myScore" class="mui-navigate-right" style="color: #737373; font-size: 14px;">我的考核</a>
+							</li>
+						</ul>
+					</div>
+					<!-- 我的考核 end-->
+
+				</div>
+				<!--  .mui-scroll end -->
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.11.3.js"></script>
+		<script src="js/mui.zoom.js"></script>
+		<script src="js/mui.previewimage.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//设置课程信息
+			function setCourseInfo(course, teachers) {
+				//设置班主任
+				var classAdviser = '';
+				if(course.classAdviserName && course.classAdviserName != '') {
+					classAdviser += course.classAdviserName;
+				}
+				if(course.classAdviserMobile && course.classAdviserMobile != '') {
+					classAdviser += '，<i class="fa fa-phone"></i><a href="tel:' + course.classAdviserMobile + '">' + course.classAdviserMobile + '</a> ';
+				}
+				$('#classAdviser').html(classAdviser);
+				//设置任课老师
+				var teacher = '';
+				if(teachers && teachers.length > 0) {
+					for(var i = 0; i < teachers.length; i++) {
+						if(!teachers[i].user) {
+							continue;
+						}
+						teacher += teachers[i].user.name;
+						if(i < teachers.length - 1) {
+							teacher += '、';
+						}
+					}
+				}
+				$('#teacher').html(teacher);
+				//时间
+				var date = ''
+				if(course.startTime && course.startTime != '') {
+					date += course.startTime.split(' ')[0];
+				}
+				if(course.endTime && course.endTime != '') {
+					date += ' 至 ' + course.endTime.split(' ')[0];
+				}
+				$('#date').html(date);
+				//地点
+				var addr = ''
+				if(course.addr && course.addr != '') {
+					addr = course.addr;
+				}
+				$('#addr').html(addr);
+				
+				//主办单位
+				var organizer = ''
+				if(course.organizer && course.organizer != '') {
+					organizer = course.organizer;
+				}
+				$('#organizer').html(organizer);
+				
+				//简介
+				var description = '';
+				if(course.description && course.description != '') {
+					description = course.description;
+				}
+				$('#description').html(description);
+			}
+			//设置课程图片
+			function setCoursePhotos(photos, user) {
+				var ul = $('.course-imgs');
+				var w = ul.parent().width() / 4;
+				if(photos && photos.length > 0) {
+					for(var i = 0; i < photos.length; i++) {
+						var li = '<li photoId="' + photos[i].id + '" style="width:' + w + 'px; height:' + w + 'px;"><img src="' + HOST + '/training/filesys/download/' + photos[i].fileId + '?thumb" data-preview-src="" data-preview-group="1" ><span class="course-img-del" onclick="delCourseImg(this)"><i class="fa fa-minus"></i></span></li>';
+						ul.append(li);
+					}
+				}
+				if(user.type == '0' || user.type == '2') {
+					ul.append('<li style="width:' + w + 'px; height:' + w + 'px;"><div class="course-img-add-btn" style="line-height: ' + (w - 6) + 'px;"><i class="fa fa-plus"></i></div></li>');
+					ul.append('<li style="width:' + w + 'px; height:' + w + 'px;"><div class="course-img-remove-btn" style="line-height: ' + (w - 6) + 'px;"><i class="fa fa-minus"></i></div></li>');
+				}
+				mui.previewImage();
+			}
+			//设置课程评估
+			function setAssesses(user, courseAssessesMap, course) {
+				if(user.type == '0' || user.type == '2' || user.type == '3') {
+					$.each($('#assessPanel li .assess-val'), function(i, n) {
+						$(this).empty();
+						var a_name = $(this).attr('name');
+						var num = 0;
+						var val = 0;
+						if('mgntVal' == a_name) {
+							num = course.mgntValCount;
+							val = course.mgntVal;
+						} else if('courseVal' == a_name) {
+							num = course.courseValCount;
+							val = course.courseVal;
+						} else {
+							num = course.teacherValCount;
+							val = course.teacherVal;
+						}
+						var avg = 0;
+						if(num > 0) {
+							avg = val / num;
+						}
+						var fix = avg.toFixed(1) + '';
+						if(fix.indexOf('.0') != -1) {
+							fix = fix.substring(0, fix.indexOf('.0'));
+						}
+						$(this).append('<span style="line-height: 43px; font-size: 14px;">：<span style="color: #FFB270;">' + num + '</span>人评估，平均<span style="color: #FFB270;">' + fix + '</span>星</span>')
+					});
+				} else {
+					$.each($('#assessPanel li .assess-val'), function(i, n) {
+						$(this).empty();
+						$(this).append('<i class="fa fa-star" value="1"></i><i class="fa fa-star" value="2"></i><i class="fa fa-star" value="3"></i><i class="fa fa-star" value="4"></i><i class="fa fa-star" value="5"></i>');
+					});
+					$.each(courseAssessesMap, function(i, n) {
+						$('#assessPanel li .assess-val[name="' + i + '"] i:lt(' + n + ')').addClass('hover');
+					});
+				}
+			}
+			//老师评估
+			function setTeacherAssesses(user, teachers, teacherAssessMap) {
+				if(!teachers || teachers.length < 1) {
+					return;
+				}
+				if(user.type == '0' || user.type == '2' || user.type == '3') {
+					for(var i = 0; i < teachers.length; i++) {
+						if(!teacherAssessMap[teachers[i].user.id]) {
+							continue;
+						}
+						var html = '<div class="tv">';
+						html += '	<ul class="mui-table-view">';
+						html += '		<li class="mui-table-view-cell mui-collapse">';
+						html += '			<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">' + teachers[i].user.name + '评估</a>';
+						html += '			<ul class="mui-table-view mui-table-view-chevron assessList">';
+						for(var j = 0; j < teacherAssessMap[teachers[i].user.id].length; j++) {
+							var item = teacherAssessMap[teachers[i].user.id][j];
+							html += '<li class="mui-table-view-cell">';
+							html += '	<div class="assess-name">' + item.teacherAssessItem.name + '</div>';
+							html += '	<div class="assess-val" teacherId="' + teachers[i].user.id + '" itemId="' + item.teacherAssessItem.id + '" assessId="' + (item.teacherAssess ? item.teacherAssess.id : '') + '">';
+							var num = 0;
+							var val = 0;
+							if(item.teacherAssess) {
+								num = item.teacherAssess.count;
+								val = item.teacherAssess.value;
+							}
+							var avg = 0;
+							if(num > 0) {
+								avg = val / num;
+							}
+							var fix = avg.toFixed(1) + '';
+							if(fix.indexOf('.0') != -1) {
+								fix = fix.substring(0, fix.indexOf('.0'));
+							}
+							html += '<span style="line-height: 43px; font-size: 14px;">：<span style="color: #FFB270;">' + num + '</span>人评估，平均<span style="color: #FFB270;">' + fix + '</span>星</span>';
+							html += '	</div>';
+							html += '</li>';
+						}
+						html += '			</ul>';
+						html += '		</li>';
+						html += '	</ul>';
+						html += '</div>';
+						$('#teacherAssess').append(html);
+					}
+				} else {
+					for(var i = 0; i < teachers.length; i++) {
+						var html = '<div class="tv">';
+						html += '	<ul class="mui-table-view">';
+						html += '		<li class="mui-table-view-cell mui-collapse">';
+						html += '			<a class="mui-navigate-right" href="#" style="color: #737373; font-size: 14px;">' + teachers[i].user.name + '评估</a>';
+						html += '			<ul class="mui-table-view mui-table-view-chevron assessList">';
+						for(var j = 0; j < teacherAssessMap[teachers[i].user.id].length; j++) {
+							var item = teacherAssessMap[teachers[i].user.id][j];
+							html += '<li class="mui-table-view-cell">';
+							html += '	<div class="assess-name">' + item.teacherAssessItem.name + '</div>';
+							html += '	<div class="assess-val" teacherId="' + teachers[i].user.id + '" itemId="' + item.teacherAssessItem.id + '" assessId="' + (item.teacherAssess ? item.teacherAssess.id : '') + '">';
+							html += '		<i class="fa fa-star ' + (item.teacherAssessRecord && item.teacherAssessRecord.val > 0 ? 'hover' : '') + '" value="1"></i>';
+							html += '		<i class="fa fa-star ' + (item.teacherAssessRecord && item.teacherAssessRecord.val > 1 ? 'hover' : '') + '" value="2"></i>';
+							html += '		<i class="fa fa-star ' + (item.teacherAssessRecord && item.teacherAssessRecord.val > 2 ? 'hover' : '') + '" value="3"></i>';
+							html += '		<i class="fa fa-star ' + (item.teacherAssessRecord && item.teacherAssessRecord.val > 3 ? 'hover' : '') + '" value="4"></i>';
+							html += '		<i class="fa fa-star ' + (item.teacherAssessRecord && item.teacherAssessRecord.val > 4 ? 'hover' : '') + '" value="5"></i>';
+							html += '	</div>';
+							html += '</li>';
+						}
+						html += '			</ul>';
+						html += '		</li>';
+						html += '	</ul>';
+						html += '</div>';
+						$('#teacherAssess').append(html);
+					}
+				}
+			}
+			//设置我的考勤
+			function setAttendances(attendances, user) {
+				if(user.type != '1') {
+					$('#userAttendances').parent().parent().parent().hide();
+					$('#courseAttendances').parent().parent().parent().show();
+					if(attendances && attendances.length > 0) {
+						for(var i = 0; i < attendances.length; i++) {
+							var startTime = attendances[i].startTime.split(' ')[1];
+							startTime = startTime.substring(0, 5);
+							var endTime = attendances[i].endTime.split(' ')[1];
+							endTime = endTime.substring(0, 5);
+							var status = attendances[i].checkCount + '人出勤';
+							var li = '';
+							li += '<li attendanceId="' + attendances[i].id + '" class="mui-table-view-cell">';
+							li += '    <div class="attendance-cell">';
+							li += '    		<p>' + dateFormat(new Date(attendances[i].date), 'yyyy-MM-dd') + '，' + attendances[i].week + '，' + startTime + '-' + endTime + '</p>';
+							li += '    </div>';
+							li += '    <div class="attendance-cell">'
+							li += '    		<p>' + status + '</p>';
+							li += '    </div>';
+							li += '</li>';
+							$('#courseAttendances').append(li);
+						}
+					} else {
+						var li = '';
+						li += '<li class="mui-table-view-cell">';
+						li += '    <div class="attendance-cell">';
+						li += '    		<p>暂无</p>';
+						li += '    </div>';
+						li += '</li>';
+						$('#courseAttendances').append(li);
+					}
+				} else {
+					$('#userAttendances').parent().parent().parent().show();
+					$('#courseAttendances').parent().parent().parent().hide();
+					if(attendances && attendances.length > 0) {
+						for(var i = 0; i < attendances.length; i++) {
+							var startTime = attendances[i].startTime.split(' ')[1];
+							startTime = startTime.substring(0, 5);
+							var endTime = attendances[i].endTime.split(' ')[1];
+							endTime = endTime.substring(0, 5);
+							var status = '<span style="color: red;">未签到</span>';
+							if(attendances[i].status == '1') {
+								status = '已到';
+							}
+							var li = '';
+							li += '<li class="mui-table-view-cell">';
+							li += '    <div class="attendance-cell">';
+							li += '    		<p>' + dateFormat(new Date(attendances[i].date), 'yyyy-MM-dd') + '，' + attendances[i].week + '，' + startTime + '-' + endTime + '</p>';
+							li += '    </div>';
+							li += '    <div class="attendance-cell">'
+							li += '    		<p>' + status + '</p>';
+							li += '    </div>';
+							li += '</li>';
+							$('#userAttendances').append(li);
+						}
+					} else {
+						var li = '';
+						li += '<li class="mui-table-view-cell">';
+						li += '    <div class="attendance-cell">';
+						li += '    		<p>暂无</p>';
+						li += '    </div>';
+						li += '</li>';
+						$('#userAttendances').append(li);
+					}
+				}
+			}
+			//设置我的作业
+			function setHomeworks(homeworks, user) {
+				if(user.type != '1') {
+					$('#userHomeworks').parent().parent().parent().hide();
+					$('#courseHomeworks').parent().parent().parent().show();
+					if(homeworks && homeworks.length > 0) {
+						for(var i = 0; i < homeworks.length; i++) {
+							var status = homeworks[i].checkCount + '人完成';
+							var li = '';
+							li += '<li homeworkId="' + homeworks[i].id + '" class="mui-table-view-cell">';
+							li += '    <div class="attendance-cell">';
+							li += '    		<p>' + homeworks[i].title + '</p>';
+							li += '    </div>';
+							li += '    <div class="attendance-cell">'
+							li += '    		<p>' + status + '</p>';
+							li += '    </div>';
+							li += '</li>';
+							$('#courseHomeworks').append(li);
+						}
+					} else {
+						var li = '';
+						li += '<li class="mui-table-view-cell">';
+						li += '    <div class="attendance-cell">';
+						li += '    		<p>暂无</p>';
+						li += '    </div>';
+						li += '</li>';
+						$('#courseHomeworks').append(li);
+					}
+				} else {
+					$('#userHomeworks').parent().parent().parent().show();
+					$('#courseHomeworks').parent().parent().parent().hide();
+					if(homeworks && homeworks.length > 0) {
+						for(var i = 0; i < homeworks.length; i++) {
+							var status = '<span style="color: red;">未完成</span>';
+							if(homeworks[i].status == '1') {
+								status = '已完成';
+							}
+							var li = '';
+							li += '<li userHomeworkId="' + homeworks[i].content + '" homeworkId="' + homeworks[i].id + '" status="' + homeworks[i].status + '" class="mui-table-view-cell">';
+							li += '    <div class="attendance-cell">';
+							li += '    		<p>' + homeworks[i].title + '</p>';
+							li += '    </div>';
+							li += '    <div class="attendance-cell">'
+							li += '    		<p>' + status + '</p>';
+							li += '    </div>';
+							li += '</li>';
+							$('#userHomeworks').append(li);
+						}
+					} else {
+						var li = '';
+						li += '<li class="mui-table-view-cell">';
+						li += '    <div class="attendance-cell">';
+						li += '    		<p>暂无</p>';
+						li += '    </div>';
+						li += '</li>';
+						$('#userHomeworks').append(li);
+					}
+				}
+			}
+			//设置我的考核
+			function setUserScore(userScore, user) {
+				if(user.type != '1') {
+					$('#myScore').parent().parent().parent().hide();
+				} else {
+					$('#myScore').parent().parent().parent().show();
+				}
+			}
+			//设置学员列表
+			function setStudents(students, user) {
+				if(students && students.length > 0) {
+					for(var i = 0; i < students.length; i++) {
+						var li = '';
+						li += '<li studentId="' + students[i].id + '" class="mui-table-view-cell">';
+						li += '    <div class="attendance-cell">';
+						li += '    		<p>' + students[i].name + '</p>';
+						var company = '';
+						var title = '';
+						if(students[i].company) {
+							company = students[i].company;
+						}
+						if(students[i].title) {
+							title = students[i].title;
+						}
+						li += '    		<p style="color: #999; font-size: 12px;">' + company + ' ' + title + '</p>';
+						li += '    </div>';
+						li += '    <div class="attendance-cell">'
+						if(students[i].mobile && students[i].mobile != '') {
+							li += '    		<p><i class="fa fa-phone"></i><a href="tel:' + students[i].mobile + '">' + students[i].mobile + '</a></p>';
+						}
+						li += '    </div>';
+						li += '</li>';
+						$('#students').append(li);
+					}
+				} else {
+					var li = '';
+					li += '<li class="mui-table-view-cell">';
+					li += '    <div class="attendance-cell">';
+					li += '    		<p>暂无</p>';
+					li += '    </div>';
+					li += '</li>';
+					$('#students').append(li);
+				}
+			}
+			//查询课程信息
+			function getCourseDetail(courseId, name) {
+				mui('.mui-scroll-wrapper').scroll().scrollTo(0, 0, 0); //100毫秒滚动到顶
+				$('#courseId').val(courseId);
+				$('#courseName').html(name);
+				$('#classAdviser').html('');
+				$('#teacher').html('');
+				$('#date').html('');
+				$('#addr').html('');
+				$('#organizer').html('');
+				$('#description').html('');
+				$('.course-imgs').empty();
+				$('#assessPanel li .assess-val i').removeClass('hover');
+				$('#teacherAssess').empty();
+				$('#students').empty();
+				$('#students').parent().removeClass('mui-active');
+				$('#userAttendances').empty();
+				$('#userAttendances').parent().removeClass('mui-active');
+				$('#courseAttendances').empty();
+				$('#courseAttendances').parent().removeClass('mui-active');
+				$('#userHomeworks').empty();
+				$('#userHomeworks').parent().removeClass('mui-active');
+				$('#courseHomeworks').empty();
+				$('#courseHomeworks').parent().removeClass('mui-active');
+				plus.nativeUI.showWaiting();
+				ajax({
+					url: '/training/app/course/' + courseId + '/' + getUserId(),
+					type: 'GET',
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if(ajaxSuccess(json)) {
+							var map = json.data;
+							var user = getUserInfo();
+							//设置课程信息
+							var course = map.courseDto.course;
+							var teachers = map.teachers;
+							setCourseInfo(course, teachers);
+							//图片
+							//							var photos = map.courseDto.photos;
+							//							setCoursePhotos(photos, user);
+							//评估
+							var courseAssessesMap = map.courseAssessesMap;
+							setAssesses(user, courseAssessesMap, course);
+							//讲师评估
+							var teacherAssessMap = map.teacherAssessMap;
+							setTeacherAssesses(user, teachers, teacherAssessMap);
+							//学员列表
+							var students = map.students;
+							setStudents(students, user);
+							//考勤
+							var attendances = map.attendances;
+							setAttendances(attendances, user);
+							//作业
+							var homeworks = map.homeworks;
+							setHomeworks(homeworks, user);
+							//考核
+							var userScore = map.userScore;
+							setUserScore(userScore, user);
+						} else {
+							plus.nativeUI.toast('获取课程信息失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.ui.toast('获取课程信息失败，请稍后再试');
+					}
+				});
+			}
+			// 删除课程图片
+			function delCourseImg(target) {
+				var photoId = $(target).parent().attr('photoId');
+				plus.nativeUI.showWaiting();
+				ajax({
+					url: '/training/course/delCoursePhoto/' + photoId,
+					type: 'POST',
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if(ajaxSuccess(json)) {
+							$('.course-imgs li[photoId="' + photoId + '"]').remove();
+							$('.course-img-del').hide();
+							$('.course-img-remove-btn').empty();
+							$('.course-img-remove-btn').append('<i class="fa fa-minus"></i>');
+							mui.previewImage();
+						} else {
+							plus.nativeUI.toast('操作失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			// 评分
+			function addCourseAssess(name, val) {
+				plus.nativeUI.showWaiting();
+				var courseAssess = {
+					userId: getUserId(),
+					courseId: $('#courseId').val(),
+					name: name,
+					val: val
+				};
+				ajax({
+					url: '/training/course/assess',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(courseAssess),
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if(ajaxSuccess(json)) {
+							$('#assessPanel .assess-val[name="' + name + '"] i').removeClass('hover');
+							$('#assessPanel .assess-val[name="' + name + '"] i:lt(' + val + ')').addClass('hover');
+						} else if(json.code == '10008') {
+							plus.nativeUI.toast('你已经评过分');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			// 评分
+			function addTeacherAssess(teacherId, itemId, val) {
+				plus.nativeUI.showWaiting();
+				var data = 'teacherId=' + teacherId + '&itemId=' + itemId + '&courseId=' + $('#courseId').val() + '&userId=' + getUserId() + '&val=' + val;
+				ajax({
+					url: '/training/assess/teacherAssess',
+					type: 'POST',
+					contentType: 'application/x-www-form-urlencoded',
+					data: data,
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if(ajaxSuccess(json)) {
+							$('#teacherAssess .assess-val[teacherId="' + teacherId + '"][itemId="' + itemId + '"] i').removeClass('hover');
+							$('#teacherAssess .assess-val[teacherId="' + teacherId + '"][itemId="' + itemId + '"] i:lt(' + val + ')').addClass('hover');
+						} else if(json.code == '10008') {
+							plus.nativeUI.toast('你已经评过分');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('操作失败，请稍后再试');
+					}
+				});
+			}
+			// 添加课程图片
+			function addCoursePhoto(courseId, fileId) {
+				plus.nativeUI.showWaiting();
+				var coursePhoto = {
+					courseId: courseId,
+					fileId: fileId
+				};
+				ajax({
+					url: '/training/course/addCoursePhoto',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(coursePhoto),
+					success: function(json) {
+						plus.nativeUI.closeWaiting();
+						if(ajaxSuccess(json)) {
+							var w = $('.course-imgs').parent().width() / 4;
+							var $li = $('<li photoId="' + json.data.id + '" style="width:' + w + 'px; height:' + w + 'px;"><img src="' + HOST + '/training/filesys/download/' + json.data.fileId + '?thumb"  data-preview-src="" data-preview-group="1" ><span class="course-img-del" onclick="delCourseImg(this)"><i class="fa fa-minus"></i></span></li>')
+							if($('.course-img-add-btn').length > 0) {
+								$('.course-img-add-btn').parent().before($li);
+							} else {
+								$('.course-imgs').append($li);
+							}
+							mui.previewImage();
+						} else {
+							plus.nativeUI.toast('上传图片失败，请稍后再试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast('上传图片失败，请稍后再试');
+					}
+				});
+			}
+			//上传图片
+			function uploadImg(path) {
+				var img = new Image();
+				img.onload = function() {
+					//生成比例 
+					var w = this.width;
+					var h = this.height;
+					var scale = w / h;
+					w = 1000 || w;
+					h = (w / scale).toFixed(0);
+					//生成canvas
+					var canvas = document.createElement('canvas');
+					var ctx = canvas.getContext('2d');
+					$(canvas).attr({
+						width: w,
+						height: h
+					});
+					ctx.drawImage(this, 0, 0, w, h);
+					var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8); //1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
+					plus.nativeUI.showWaiting();
+					ajax({
+						url: '/training/filesys/uploadBase64?original&normalWidth=450&normalHeight=450&thumbWidth=' + w + '&thumbHeight=' + h,
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify({
+							path: base64
+						}),
+						success: function(json) {
+							plus.nativeUI.closeWaiting();
+							if(ajaxSuccess(json)) {
+								addCoursePhoto($('#courseId').val(), json.data.id);
+							} else {
+								plus.nativeUI.toast('上传图片失败，请稍后再试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting();
+							plus.nativeUI.toast('上传图片失败，请稍后再试');
+						}
+					});
+				}
+				img.src = path;
+			}
+			// 拍照
+			function getCameraImage() {
+				var cmr = plus.camera.getCamera();
+				cmr.captureImage(function(p) {
+					plus.gallery.save(p);
+					plus.io.resolveLocalFileSystemURL(p, function(entry) {
+						uploadImg(entry.toLocalURL());
+					}, function(e) {
+						plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+					});
+				}, function(e) {
+					plus.nativeUI.toast("失败：" + e.message);
+				}, {
+					filename: "_doc/camera/",
+					index: 1
+				});
+			}
+			//系统相册
+			function getGalleryImage() {
+				// 从相册中选择图片
+				plus.gallery.pick(function(path) {
+					uploadImg(path);
+				}, function(e) {}, {
+					filter: "image"
+				});
+			}
+			//弹出ActionSheet
+			function showActionSheet() {
+				var bts = [{
+					title: "拍照",
+				}, {
+					title: "从手机相册选择"
+				}];
+				plus.nativeUI.actionSheet({
+						title: "请选择操作",
+						cancel: "取消",
+						buttons: bts
+					},
+					function(e) {
+						if(e.index == 1) {
+							getCameraImage();
+						} else if(e.index == 2) {
+							getGalleryImage();
+						}
+					}
+				);
+			}
+			//更新作业的状态
+			function finishHomework(homeworkId, userHomeworkId) {
+				var li = $('#userHomeworks li[homeworkId="' + homeworkId + '"]');
+				li.attr('userHomeworkId', userHomeworkId);
+				li.attr('status', '1');
+				li.find('.attendance-cell:eq(1) p').text('已完成');
+			}
+			//我的考核
+			function showMyScore() {
+				return mui.openWindow({
+					url: 'userScore.html',
+					id: 'userScore.html',
+					show: {
+						aniShow: 'slide-out-bottom'
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...' //等待对话框上显示的提示内容
+					},
+					extras: {
+						courseId: $('#courseId').val()
+					}
+				});
+			}
+
+			//培训场景
+			function showCourseImgs() {
+				return mui.openWindow({
+					url: 'courseImgs.html',
+					id: 'courseImgs.html',
+					show: {
+						aniShow: 'slide-out-bottom'
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...' //等待对话框上显示的提示内容
+					},
+					extras: {
+						courseId: $('#courseId').val()
+					}
+				});
+			}
+
+			mui.init({
+				
+				statusBarBackground: '#000'
+			});
+			mui.plusReady(function() {
+				// 设置系统状态栏样式为浅色文字
+				plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+				//显示详情
+				var current = plus.webview.currentWebview();
+				getCourseDetail(current.courseId, current.name);
+				document.addEventListener('finishHomework', function(event) {
+					var homeworkId = event.detail.homeworkId;
+					var userHomeworkId = event.detail.userHomeworkId;
+					finishHomework(homeworkId, userHomeworkId);
+				});
+				//删除照片按钮
+				mui('.course-imgs').on('tap', '.course-img-remove-btn', function() {
+					if($(this).text() == '取消') {
+						$('.course-img-del').hide();
+						$(this).empty();
+						$(this).append('<i class="fa fa-minus"></i>');
+					} else {
+						$('.course-img-del').show();
+						$(this).empty();
+						$(this).text('取消');
+					}
+				});
+				//添加照片按钮
+				mui('.course-imgs').on('tap', '.course-img-add-btn', function() {
+					showActionSheet();
+				});
+				//评分
+				mui('#assessPanel').on('tap', 'i', function() {
+					var $assessVal = $(this).parent();
+					addCourseAssess($assessVal.attr('name'), $(this).attr('value'));
+				});
+				//老师评分
+				mui('#teacherAssess').on('tap', 'i', function() {
+					var $assessVal = $(this).parent();
+					addTeacherAssess($assessVal.attr('teacherId'), $assessVal.attr('itemId'), $(this).attr('value'));
+				});
+				//交作业
+				mui('#userHomeworks').on('tap', 'li', function() {
+					var homeworkId = $(this).attr('homeworkId');
+					if(!homeworkId || homeworkId == '') {
+						return;
+					}
+					var userHomeworkId = $(this).attr('userHomeworkId');
+					var courseId = $('#courseId').val();
+					var status = $(this).attr('status');
+					if(status == '1') {
+						var v = mui.openWindow({
+							url: 'homework.html',
+							id: 'homework',
+							show: {
+								aniShow: 'slide-out-bottom'
+							},
+							waiting: {
+								autoShow: true, //自动显示等待框，默认为true
+								title: '正在加载...' //等待对话框上显示的提示内容
+							},
+							extras: {
+								homeworkId: userHomeworkId
+							}
+						});
+					} else {
+						var v = mui.openWindow({
+							url: 'newHomework.html',
+							id: 'newHomework',
+							show: {
+								aniShow: 'slide-out-bottom'
+							},
+							waiting: {
+								autoShow: true, //自动显示等待框，默认为true
+								title: '正在加载...' //等待对话框上显示的提示内容
+							},
+							extras: {
+								homeworkId: homeworkId,
+								courseId: courseId
+							}
+						});
+					}
+				});
+
+				//培训场景
+				var courseImgBtn = document.getElementById('courseImgBtn');
+				courseImgBtn.addEventListener('tap', function(event) {
+					showCourseImgs();
+				});
+				//我的考核
+				var myScoreBtn = document.getElementById('myScore');
+				myScoreBtn.addEventListener('tap', function(event) {
+					showMyScore();
+				});
+				mui('#courseAttendances').on('tap', 'li', function() {
+					var attendanceId = $(this).attr('attendanceId');
+					if(!attendanceId || attendanceId == '') {
+						return;
+					}
+					var courseId = $('#courseId').val();
+					mui.openWindow({
+						url: 'attendanceDetail.html',
+						id: 'attendanceDetail.html',
+						show: {
+							aniShow: 'slide-out-bottom'
+						},
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...' //等待对话框上显示的提示内容
+						},
+						extras: {
+							attendanceId: attendanceId,
+							courseId: courseId
+						}
+					});
+				});
+				mui('#courseHomeworks').on('tap', 'li', function() {
+					var homeworkId = $(this).attr('homeworkId');
+					if(!homeworkId || homeworkId == '') {
+						return;
+					}
+					var courseId = $('#courseId').val();
+					mui.openWindow({
+						url: 'homeworkDetail.html',
+						id: 'homeworkDetail.html',
+						show: {
+							aniShow: 'slide-out-bottom'
+						},
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...' //等待对话框上显示的提示内容
+						},
+						extras: {
+							homeworkId: homeworkId,
+							courseId: courseId
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

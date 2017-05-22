@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/iconfont.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.mui-bar-nav .attendance-btn {
+				color: #000;
+			}
+		</style>
+	</head>
+	
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			
+			<h1 class="mui-title">未结束培训班</h1>
+			<button id="qrCodeAttendance" class="attendance-btn mui-pull-right mui-btn-link">考勤</button>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="ingCourseList">
+				<span class="mui-icon iconfont icon-book"></span>
+				<span class="mui-tab-label">未结束培训班</span>
+			</a>
+
+			<a class="mui-tab-item" href="endCourseList">
+				<span class="mui-icon iconfont icon-book1"></span>
+				<span class="mui-tab-label">已结束培训班</span>
+			</a>
+			
+			<a class="mui-tab-item" href="user">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">我</span>
+			</a>
+			
+		</nav>
+		<div class="mui-content">
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//打开考勤页面
+			function openAttendancePage() {
+				mui.openWindow({
+					url: 'qrcode_scan.html',
+					id: 'qrcode_scan',
+					show: {
+						aniShow: 'slide-out-bottom'
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...' //等待对话框上显示的提示内容
+					}
+				});
+			}
+			
+			mui.init({
+				statusBarBackground: '#000'
+			});
+			
+			mui.plusReady(function() {
+				// 设置系统状态栏样式为浅色文字
+				plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+				var currentWebview = plus.webview.currentWebview();
+				//创建未结束课程页面
+				
+				var ingCourseList = plus.webview.create("courseList.html", "ingCourseList", {
+					top: '45px',
+					bottom: '51px'
+				});
+				currentWebview.append(ingCourseList);
+				//创建已结束课程页面
+				var endCourseList = plus.webview.create("courseList.html", "endCourseList", {
+					top: '45px',
+					bottom: '51px'
+				});
+				endCourseList.hide();
+				currentWebview.append(endCourseList);
+				
+				var user = plus.webview.create("user.html", "user", {
+					top: '45px',
+					bottom: '51px'
+				});
+				user.hide(); 
+				currentWebview.append(user);
+				
+				//设置标题文字
+				//绑定tab点击事件
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var href = this.getAttribute('href');
+					var a_href = mui('.mui-bar-tab .mui-active')[0].getAttribute('href');
+					if (href == a_href) {
+						return;
+					}
+					plus.webview.hide(a_href);
+					mui('.mui-title')[0].innerText = this.querySelector('.mui-tab-label').innerText;
+					plus.webview.show(href);
+				});
+				//绑定考勤按钮点击事件
+				document.getElementById('qrCodeAttendance').addEventListener('tap', function(event) {
+					openAttendancePage();
+				});
+			
+
+		window.addEventListener('refresh', function(e) {  
+        
+        endCourseList.reload();
+        user.reload();
+        ingCourseList.reload();
+        
+   }) ;
+	
+			if(checkLoginStatus() == false){
+				showLoginPage();
+			}
+			
+			});
+			
+			
+		</script>
+	</body>
+
+</html>
